@@ -40,30 +40,8 @@
             z-index: -1;
         }
         
-        .cursor {
-            position: fixed;
-            width: 24px;
-            height: 24px;
-            border: 2px solid var(--accent-2);
-            border-radius: 50%;
-            left: 0;
-            top: 0;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            transition: width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s, backdrop-filter 0.3s;
-        }
-
-        .cursor.grow {
-            width: 48px;
-            height: 48px;
-            background-color: rgba(236, 72, 153, 0.2);
-            border-color: var(--accent-2);
-            backdrop-filter: blur(2px);
-        }
-        
         .section {
-            padding: 8rem 2rem;
+            padding: 8rem 1rem;
             position: relative;
             z-index: 1;
             min-height: 100vh;
@@ -78,31 +56,6 @@
             border: 1px solid var(--border-color);
             border-radius: 1.5rem;
             transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: var(--y, 0);
-            left: var(--x, 0);
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(139, 92, 246, 0) 70%);
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-
-        .glass-card:hover::before {
-            opacity: 1;
-        }
-
-        .glass-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
-            border-color: rgba(139, 92, 246, 0.4);
         }
         
         .gradient-text {
@@ -132,47 +85,90 @@
             transform-origin: left;
         }
         
-        [data-anime] {
+        /* In-Out Transition Classes */
+        [data-scroll-anim] {
             opacity: 0;
-            transform: translateY(50px);
+            transform: translateY(60px);
+            transition: opacity 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        [data-scroll-anim].is-in-view {
+            opacity: 1;
+            transform: translateY(0);
         }
 
+        /* Mobile Menu */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(1, 1, 20, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(-100%);
+            transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        .mobile-nav.is-open {
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="antialiased">
 
-    <div class="cursor"></div>
     <canvas id="bg-canvas"></canvas>
 
-    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="navbar">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+    <header class="fixed top-0 left-0 right-0 z-[100] transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
             <a href="#hero" class="text-3xl font-extrabold tracking-wider gradient-text">AC</a>
+            
+            <!-- Desktop Nav -->
             <nav class="hidden md:flex space-x-10 items-center">
                 <a href="#tech-stack" class="nav-link text-slate-300 hover:text-white transition-colors duration-300">Tech Stack</a>
                 <a href="#projects" class="nav-link text-slate-300 hover:text-white transition-colors duration-300">Projects</a>
                 <a href="#experience" class="nav-link text-slate-300 hover:text-white transition-colors duration-300">Experience</a>
                 <a href="#contact" class="nav-link text-slate-300 hover:text-white transition-colors duration-300">Contact</a>
             </nav>
+
+            <!-- Mobile Menu Button -->
+            <button id="menu-btn" class="md:hidden z-[101] space-y-1.5">
+                <span class="block w-6 h-0.5 bg-white transition-transform duration-300"></span>
+                <span class="block w-6 h-0.5 bg-white transition-transform duration-300"></span>
+                <span class="block w-4 h-0.5 bg-white transition-transform duration-300"></span>
+            </button>
         </div>
     </header>
+
+    <!-- Mobile Nav Menu -->
+    <div id="mobile-menu" class="mobile-nav">
+        <a href="#tech-stack" class="text-3xl font-bold mb-8">Tech Stack</a>
+        <a href="#projects" class="text-3xl font-bold mb-8">Projects</a>
+        <a href="#experience" class="text-3xl font-bold mb-8">Experience</a>
+        <a href="#contact" class="text-3xl font-bold">Contact</a>
+    </div>
+
 
     <!-- Hero Section -->
     <section id="hero" class="section text-center">
         <div class="max-w-4xl mx-auto z-10">
-            <h1 class="text-6xl md:text-8xl font-black text-white mb-4 tracking-tight" data-anime="title">
+            <h1 class="text-5xl md:text-8xl font-black text-white mb-4 tracking-tight" data-anime="title">
                 Aditya Chauhan
             </h1>
-            <h2 class="text-2xl md:text-3xl font-bold text-slate-300 mb-6" data-anime="subtitle">
+            <h2 class="text-xl md:text-3xl font-bold text-slate-300 mb-6" data-anime="subtitle">
                 AI/ML & DevOps
             </h2>
-            <p class="text-lg text-text-secondary mb-10 max-w-2xl mx-auto" data-anime="text">
+            <p class="text-base md:text-lg text-text-secondary mb-10 max-w-2xl mx-auto" data-anime="text">
                 Building NLP tools, recommendation engines, and scalable backends.
             </p>
-            <div class="flex justify-center items-center space-x-4" data-anime="buttons">
-                <a href="#projects" class="bg-transparent border-2 border-violet-500 text-violet-400 font-bold py-3 px-8 rounded-full hover:bg-violet-500 hover:text-white transition-all duration-300 transform hover:scale-105">
+            <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4" data-anime="buttons">
+                <a href="#projects" class="w-full sm:w-auto bg-transparent border-2 border-violet-500 text-violet-400 font-bold py-3 px-8 rounded-full hover:bg-violet-500 hover:text-white transition-all duration-300 transform hover:scale-105">
                     View Projects
                 </a>
-                <a href="#contact" class="bg-pink-500 text-white font-bold py-3 px-8 rounded-full hover:bg-pink-600 transition-all duration-300 transform hover:scale-105">
+                <a href="#contact" class="w-full sm:w-auto bg-pink-500 text-white font-bold py-3 px-8 rounded-full hover:bg-pink-600 transition-all duration-300 transform hover:scale-105">
                     Get In Touch
                 </a>
             </div>
@@ -181,40 +177,40 @@
 
     <!-- Tech Stack Section -->
     <section id="tech-stack" class="section">
-        <div class="text-center mb-16" data-anime="section-title">
+        <div class="text-center mb-12 md:mb-16" data-scroll-anim>
             <h2 class="text-4xl md:text-5xl font-black text-white">Tech <span class="gradient-text">Stack</span></h2>
-            <p class="text-text-secondary mt-4 text-lg">Technologies and tools I work with to build innovative solutions</p>
+            <p class="text-text-secondary mt-4 text-lg">My toolkit for building innovative solutions</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto w-full">
-            <div class="glass-card p-8" data-anime="card">
-                <div class="flex items-center mb-4"><h3 class="text-2xl font-bold text-white">Languages</h3></div>
-                <div class="flex flex-wrap gap-3"><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Python</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Java</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">MySQL</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">C++</span></div>
+            <div class="glass-card p-8" data-scroll-anim style="transition-delay: 100ms;">
+                <h3 class="text-2xl font-bold text-white mb-4">Languages</h3>
+                <div class="flex flex-wrap gap-3"><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Python</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Java</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">MySQL</span></div>
             </div>
-            <div class="glass-card p-8" data-anime="card">
-                <div class="flex items-center mb-4"><h3 class="text-2xl font-bold text-white">Frameworks & Tools</h3></div>
-                <div class="flex flex-wrap gap-3"><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Streamlit</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Docker</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Kubernetes</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Jenkins</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Git</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Flask & Django</span></div>
+            <div class="glass-card p-8" data-scroll-anim style="transition-delay: 200ms;">
+                <h3 class="text-2xl font-bold text-white mb-4">Frameworks & Tools</h3>
+                <div class="flex flex-wrap gap-3"><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Streamlit</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Docker</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Kubernetes</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Git</span></div>
             </div>
-            <div class="glass-card p-8" data-anime="card">
-                <div class="flex items-center mb-4"><h3 class="text-2xl font-bold text-white">Domains & Concepts</h3></div>
-                <div class="flex flex-wrap gap-3"><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">AI</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Machine Learning</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">NLP</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">Data Analytics</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">DevOps</span></div>
+            <div class="glass-card p-8" data-scroll-anim style="transition-delay: 300ms;">
+                <h3 class="text-2xl font-bold text-white mb-4">Domains & Concepts</h3>
+                <div class="flex flex-wrap gap-3"><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">AI/ML</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">NLP</span><span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-full text-sm font-medium">DevOps</span></div>
             </div>
         </div>
     </section>
 
     <!-- Featured Projects Section -->
     <section id="projects" class="section">
-        <div class="text-center mb-16" data-anime="section-title">
+        <div class="text-center mb-12 md:mb-16" data-scroll-anim>
             <h2 class="text-4xl md:text-5xl font-black text-white">Featured <span class="gradient-text">Projects</span></h2>
             <p class="text-text-secondary mt-4 text-lg">Showcasing innovative AI/ML solutions</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl mx-auto w-full">
-            <div class="glass-card p-8 flex flex-col" data-anime="card">
+            <div class="glass-card p-8 flex flex-col" data-scroll-anim style="transition-delay: 100ms;">
                 <h3 class="text-2xl font-bold text-white mb-2">LLaMA Translation Tool</h3>
                 <p class="text-text-secondary mb-4 flex-grow">Real-time multilingual translation with grammar & idiomatic insights.</p>
                 <div class="mt-auto flex space-x-4"><a href="#" class="bg-slate-700 text-slate-300 font-bold py-2 px-6 rounded-full hover:bg-slate-600 transition-colors">Code</a><a href="#" class="bg-pink-500 text-white font-bold py-2 px-6 rounded-full hover:bg-pink-600 transition-colors">Live Demo</a></div>
             </div>
-            <div class="glass-card p-8 flex flex-col" data-anime="card">
-                <h3 class="text-2xl font-bold text-white mb-2">Content-Based Movie Recommender</h3>
+            <div class="glass-card p-8 flex flex-col" data-scroll-anim style="transition-delay: 200ms;">
+                <h3 class="text-2xl font-bold text-white mb-2">Movie Recommender</h3>
                 <p class="text-text-secondary mb-4 flex-grow">Smart movie recommendations using NLP and similarity algorithms.</p>
                 <div class="mt-auto flex space-x-4"><a href="#" class="bg-slate-700 text-slate-300 font-bold py-2 px-6 rounded-full hover:bg-slate-600 transition-colors">Code</a><a href="#" class="bg-pink-500 text-white font-bold py-2 px-6 rounded-full hover:bg-pink-600 transition-colors">Live Demo</a></div>
             </div>
@@ -223,25 +219,23 @@
 
     <!-- Professional Experience Section -->
     <section id="experience" class="section">
-        <div class="text-center mb-16" data-anime="section-title">
+        <div class="text-center mb-12 md:mb-16" data-scroll-anim>
             <h2 class="text-4xl md:text-5xl font-black text-white">Professional <span class="gradient-text">Experience</span></h2>
             <p class="text-text-secondary mt-4 text-lg">My journey in AI/ML and backend operations</p>
         </div>
         <div class="max-w-4xl mx-auto w-full space-y-8">
-            <div class="glass-card p-8" data-anime="card">
-                <div class="flex justify-between items-start"><div><h3 class="text-2xl font-bold text-white">AI Intern</h3><p class="text-violet-400 font-semibold text-lg mb-2">Abacus Desk IT Solutions Pvt. Ltd.</p><p class="text-slate-500 text-sm">Apr 2025 - Present</p></div><span class="bg-pink-900/50 text-pink-300 text-xs font-bold px-3 py-1 rounded-full">Current</span></div>
-                <ul class="list-disc list-inside text-text-secondary mt-4 space-y-2"><li>Developing and implementing AI/ML solutions to automate the workflows</li><li>Working with modern AI frameworks and tools</li></ul>
+            <div class="glass-card p-8" data-scroll-anim style="transition-delay: 100ms;">
+                <div class="flex justify-between items-start"><div><h3 class="text-2xl font-bold text-white">AI Intern</h3><p class="text-violet-400 font-semibold text-lg mb-2">Abacus Desk IT Solutions</p><p class="text-slate-500 text-sm">Apr 2025 - Present</p></div><span class="bg-pink-900/50 text-pink-300 text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">Current</span></div>
             </div>
-            <div class="glass-card p-8" data-anime="card">
-                <div class="flex justify-between items-start"><div><h3 class="text-2xl font-bold text-white">Backend Operations</h3><p class="text-violet-400 font-semibold text-lg mb-2">Gaindamull Hemraj Financial Services</p><p class="text-slate-500 text-sm">Oct 2022 - Sep 2023</p></div></div>
-                <ul class="list-disc list-inside text-text-secondary mt-4 space-y-2"><li>Processed and managed transactional data pipelines for accuracy and compliance</li><li>Enhanced data processing efficiency through optimization techniques</li></ul>
+            <div class="glass-card p-8" data-scroll-anim style="transition-delay: 200ms;">
+                <h3 class="text-2xl font-bold text-white">Backend Operations</h3><p class="text-violet-400 font-semibold text-lg mb-2">Gaindamull Hemraj Financial</p><p class="text-slate-500 text-sm">Oct 2022 - Sep 2023</p>
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
     <section id="contact" class="section text-center">
-        <div data-anime="section-title">
+        <div data-scroll-anim>
             <h2 class="text-4xl md:text-5xl font-black text-white">Get In <span class="gradient-text">Touch</span></h2>
             <p class="text-text-secondary mt-4 text-lg max-w-2xl mx-auto">I'm always open to discussing new opportunities and innovative projects.</p>
             <a href="mailto:chauhanaditya2310@gmail.com" class="mt-8 inline-block bg-gradient-to-r from-violet-500 to-pink-500 text-white font-bold py-4 px-10 rounded-full hover:from-violet-600 hover:to-pink-600 transition-all duration-300 text-lg transform hover:scale-105">
@@ -251,7 +245,7 @@
     </section>
 
     <footer class="text-center py-8 text-slate-500">
-        <p>&copy; 2025 Aditya Chauhan. Crafted with Code & Coffee.</p>
+        <p>&copy; 2024 Aditya Chauhan. Crafted with Code & Coffee.</p>
     </footer>
 
     <script>
@@ -261,15 +255,51 @@
         function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
         requestAnimationFrame(raf);
 
-        // --- Custom Cursor ---
-        const cursor = document.querySelector('.cursor');
-        window.addEventListener('mousemove', e => {
-            anime({ targets: cursor, left: e.clientX, top: e.clientY, duration: 400, easing: 'easeOutQuint' });
+        // --- Animated Navigation ---
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                lenis.scrollTo(targetId, {
+                    offset: targetId === '#hero' ? -1000 : 0, // Scroll further for hero to reset view
+                    duration: 1.5,
+                    easing: (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, // easeInOutCubic
+                });
+                // Close mobile menu on click
+                if(mobileMenu.classList.contains('is-open')) {
+                    toggleMenu();
+                }
+            });
         });
-        document.querySelectorAll('a, button, .glass-card').forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
-        });
+
+        // --- Mobile Menu ---
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const toggleMenu = () => {
+            const isOpen = mobileMenu.classList.toggle('is-open');
+            menuBtn.classList.toggle('is-active', isOpen);
+            // Animate burger icon
+            const lines = menuBtn.children;
+            anime({
+                targets: lines[0],
+                translateY: isOpen ? 8 : 0,
+                rotate: isOpen ? 45 : 0,
+                duration: 300, easing: 'easeOutExpo'
+            });
+            anime({
+                targets: lines[1],
+                scaleX: isOpen ? 0 : 1,
+                duration: 300, easing: 'easeOutExpo'
+            });
+            anime({
+                targets: lines[2],
+                width: isOpen ? '1.5rem' : '1rem',
+                translateY: isOpen ? -8 : 0,
+                rotate: isOpen ? -45 : 0,
+                duration: 300, easing: 'easeOutExpo'
+            });
+        }
+        menuBtn.addEventListener('click', toggleMenu);
 
         // --- Three.js 3D Background: Neural Particle System ---
         const scene = new THREE.Scene();
@@ -280,59 +310,30 @@
 
         const particleCount = 5000;
         const positions = new Float32Array(particleCount * 3);
-        const colors = new Float32Array(particleCount * 3);
-        const sizes = new Float32Array(particleCount);
-        
         const color1 = new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--accent-1').trim());
         const color2 = new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--accent-2').trim());
-
         for (let i = 0; i < particleCount; i++) {
             const i3 = i * 3;
             positions[i3] = (Math.random() - 0.5) * 1000;
             positions[i3 + 1] = (Math.random() - 0.5) * 1000;
             positions[i3 + 2] = (Math.random() - 0.5) * 1000;
-            
-            const mixedColor = color1.clone().lerp(color2, Math.random());
-            colors[i3] = mixedColor.r;
-            colors[i3 + 1] = mixedColor.g;
-            colors[i3 + 2] = mixedColor.b;
-
-            sizes[i] = Math.random() * 5 + 1;
         }
-
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-        geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-        
-        const material = new THREE.ShaderMaterial({
-            uniforms: {
-                pointTexture: { value: new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/disc.png') }
-            },
-            vertexShader: `
-                attribute float size;
-                attribute vec3 color;
-                varying vec3 vColor;
-                void main() {
-                    vColor = color;
-                    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-                    gl_PointSize = size * ( 300.0 / -mvPosition.z );
-                    gl_Position = projectionMatrix * mvPosition;
-                }
-            `,
-            fragmentShader: `
-                varying vec3 vColor;
-                uniform sampler2D pointTexture;
-                void main() {
-                    gl_FragColor = vec4( vColor, 1.0 );
-                    gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
-                }
-            `,
+        const material = new THREE.PointsMaterial({
+            size: 1.5,
+            map: new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/disc.png'),
             blending: THREE.AdditiveBlending,
             depthTest: false,
-            transparent: true
+            transparent: true,
+            vertexColors: true
         });
-
+        const colors = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount; i++) {
+            const mixedColor = color1.clone().lerp(color2, Math.random());
+            colors[i*3] = mixedColor.r; colors[i*3+1] = mixedColor.g; colors[i*3+2] = mixedColor.b;
+        }
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
         const particles = new THREE.Points(geometry, material);
         scene.add(particles);
         
@@ -363,46 +364,20 @@
         // --- Navbar Style on Scroll ---
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.classList.add('bg-gray-900/50', 'backdrop-blur-lg', 'shadow-lg');
-            } else {
-                navbar.classList.remove('bg-gray-900/50', 'backdrop-blur-lg', 'shadow-lg');
-            }
-        });
-        
-        // --- Card hover effect ---
-        document.querySelectorAll('.glass-card').forEach(card => {
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                card.style.setProperty('--x', `${e.clientX - rect.left}px`);
-                card.style.setProperty('--y', `${e.clientY - rect.top}px`);
-            });
+            navbar.classList.toggle('bg-gray-900/50', window.scrollY > 50);
+            navbar.classList.toggle('backdrop-blur-lg', window.scrollY > 50);
         });
 
-        // --- Anime.js Scroll Animations ---
-        const observerOptions = { root: null, rootMargin: '0px 0px -150px 0px', threshold: 0 };
-        const observer = new IntersectionObserver((entries, observer) => {
+        // --- In/Out Scroll Animations ---
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const el = entry.target;
-                    const animationType = el.dataset.anime;
-                    
-                    anime({
-                        targets: el,
-                        opacity: [0, 1],
-                        translateY: [50, 0],
-                        scale: [0.9, 1],
-                        duration: 1200,
-                        easing: 'easeOutExpo',
-                    });
-                    observer.unobserve(el);
-                }
+                entry.target.classList.toggle('is-in-view', entry.isIntersecting);
             });
         }, observerOptions);
+        document.querySelectorAll('[data-scroll-anim]').forEach(el => observer.observe(el));
 
-        document.querySelectorAll('[data-anime="card"], [data-anime="section-title"]').forEach(el => observer.observe(el));
-
-        // Initial hero animation
+        // --- Initial Hero Animation ---
         const heroTimeline = anime.timeline({ easing: 'easeOutExpo', duration: 1200 });
         heroTimeline
             .add({ targets: '[data-anime="title"]', opacity: [0,1], translateY: [50,0] })
